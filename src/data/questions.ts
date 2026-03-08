@@ -19,7 +19,9 @@ export const categories: Category[] = [
   { id: "friends", name: "친구", emoji: "🤝", description: "우정 사이의 딜레마", color: "a" },
   { id: "food", name: "음식", emoji: "🍕", description: "먹는 것에 진심인 당신", color: "b" },
   { id: "life", name: "일상", emoji: "🌟", description: "인생의 크고 작은 선택", color: "a" },
-  { id: "random", name: "랜덤", emoji: "🎲", description: "예측 불가 질문들", color: "b" },
+  { id: "superpower", name: "초능력", emoji: "🦸", description: "판타지 능력 대결", color: "a" },
+  { id: "money", name: "돈/경제", emoji: "💰", description: "현실적인 돈 고민들", color: "b" },
+  { id: "random", name: "랜덤", emoji: "🎲", description: "예측 불가 질문들", color: "a" },
 ];
 
 export const questions: Question[] = [
@@ -72,6 +74,26 @@ export const questions: Question[] = [
   { id: 38, choiceA: "모든 언어 마스터", choiceB: "모든 악기 마스터", category: "life" },
   { id: 39, choiceA: "10년 전으로 돌아가기", choiceB: "10년 후를 미리 보기", category: "life" },
   { id: 40, choiceA: "투명인간 되기", choiceB: "하늘 날기", category: "life" },
+
+  // 초능력
+  { id: 41, choiceA: "마음을 읽는 능력", choiceB: "미래를 보는 능력", category: "superpower" },
+  { id: 42, choiceA: "시간을 멈추는 능력", choiceB: "순간이동 능력", category: "superpower" },
+  { id: 43, choiceA: "모든 동물과 대화", choiceB: "모든 기계를 조종", category: "superpower" },
+  { id: 44, choiceA: "기억을 지우는 능력", choiceB: "기억을 완벽히 저장하는 능력", category: "superpower" },
+  { id: 45, choiceA: "불로불사 (늙지 않음)", choiceB: "환생 (죽어도 다시 태어남)", category: "superpower" },
+  { id: 46, choiceA: "1일 1번 거짓말 탐지", choiceB: "1일 1번 누구든 설득 가능", category: "superpower" },
+  { id: 47, choiceA: "꿈을 현실로 만드는 능력", choiceB: "현실에서 꿈처럼 자유로운 능력", category: "superpower" },
+  { id: 48, choiceA: "100가지 재능 평범하게", choiceB: "1가지 재능 세계 최고로", category: "superpower" },
+
+  // 돈/경제
+  { id: 49, choiceA: "월 300만원 평생 보장", choiceB: "50% 확률로 100억 or 무일푼", category: "money" },
+  { id: 50, choiceA: "20대에 10억", choiceB: "40대에 50억", category: "money" },
+  { id: 51, choiceA: "부모님 집 사드리기", choiceB: "내 사업 투자하기", category: "money" },
+  { id: 52, choiceA: "절약해서 30대 은퇴", choiceB: "쓰면서 60대까지 일하기", category: "money" },
+  { id: 53, choiceA: "연봉 2배 but 주 6일 근무", choiceB: "현재 연봉 but 주 4일 근무", category: "money" },
+  { id: 54, choiceA: "친구에게 1000만원 빌려주기", choiceB: "친구 부탁 거절하기", category: "money" },
+  { id: 55, choiceA: "로또 1등 공개 당첨", choiceB: "아무도 모르게 당첨", category: "money" },
+  { id: 56, choiceA: "평생 전세로 살기", choiceB: "빚 내서 내 집 마련", category: "money" },
 ];
 
 export function getQuestionsByCategory(categoryId: string): Question[] {
