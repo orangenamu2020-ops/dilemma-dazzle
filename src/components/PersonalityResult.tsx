@@ -25,7 +25,7 @@ export function PersonalityResultScreen({
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col max-w-lg mx-auto">
       {/* Header */}
       <div className="px-4 pt-4 pb-2 flex items-center justify-between">
         <button onClick={onBack} className="p-2 -ml-2 rounded-xl hover:bg-secondary transition-colors">
@@ -43,7 +43,10 @@ export function PersonalityResultScreen({
           <div className="animate-bounce-in">
             <span className="text-7xl">{emoji}</span>
           </div>
-          <h2 className="text-2xl font-bold text-foreground mt-5 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+          <span className="inline-block mt-4 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+            {categoryName}
+          </span>
+          <h2 className="text-2xl font-bold text-foreground mt-3 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
             {title}
           </h2>
           <p className="text-muted-foreground text-sm text-center mt-3 leading-relaxed max-w-xs animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
