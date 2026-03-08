@@ -1,13 +1,39 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { CategorySelector } from "@/components/CategorySelector";
+import { BalanceGame } from "@/components/BalanceGame";
+import { AdBreak } from "@/components/AdBreak";
+import { getQuestionsByCategory, type Category } from "@/data/questions";
 
 const Index = () => {
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [showAd, setShowAd] = useState(false);
+
+  const handleSelectCategory = (cat: Category) => {
+    setSelectedCategory(cat);
+  };
+
+  const handleBack = () => {
+    setSelectedCategory(null);
+  };
+
+  if (showAd) {
+    return <AdBreak onClose={() => setShowAd(false)} />;
+  }
+
+  if (!selectedCategory) {
+    return <CategorySelector onSelect={handleSelectCategory} />;
+  }
+
+  const questions = getQuestionsByCategory(selectedCategory.id);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <BalanceGame
+      questions={questions}
+      categoryEmoji={selectedCategory.emoji}
+      categoryName={selectedCategory.name}
+      onBack={handleBack}
+      onShowAd={() => setShowAd(true)}
+    />
   );
 };
 
