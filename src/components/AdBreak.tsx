@@ -45,7 +45,7 @@ export function AdBreak({ onClose }: AdBreakProps) {
             <Play className="w-5 h-5" fill="currentColor" />
             광고 보고 결과 확인하기
           </button>
-          <p className="text-xs text-muted-foreground mt-4">약 5초 소요</p>
+          
         </div>
       )}
 
