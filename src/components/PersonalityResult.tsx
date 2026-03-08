@@ -1,4 +1,4 @@
-import { ArrowLeft, Share2, Copy } from "lucide-react";
+import { ArrowLeft, Share2 } from "lucide-react";
 import { shareResult, shareToKakao } from "@/lib/share";
 import { isTossApp } from "@/lib/toss";
 import { toast } from "sonner";
