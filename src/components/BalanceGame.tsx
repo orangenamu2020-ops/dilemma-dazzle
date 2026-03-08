@@ -11,11 +11,12 @@ interface BalanceGameProps {
   onFinish: (choices: ("A" | "B")[]) => void;
 }
 
-export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, onShowAd }: BalanceGameProps) {
+export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, onShowAd, onFinish }: BalanceGameProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<"A" | "B" | null>(null);
   const [votes, setVotes] = useState<Record<number, { a: number; b: number }>>({});
   const [animating, setAnimating] = useState(false);
+  const [allChoices, setAllChoices] = useState<("A" | "B")[]>([]);
 
   const question = questions[currentIndex];
   const isLast = currentIndex >= questions.length - 1;
