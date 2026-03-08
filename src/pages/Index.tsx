@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { CategorySelector } from "@/components/CategorySelector";
 import { BalanceGame } from "@/components/BalanceGame";
 import { AdBreak } from "@/components/AdBreak";
@@ -6,31 +6,56 @@ import { PersonalityResultScreen } from "@/components/PersonalityResult";
 import { getQuestionsByCategory, type Category } from "@/data/questions";
 import { getPersonalityResult } from "@/data/personality";
 
-type Screen = "category" | "game" | "ad-mid" | "ad-result" | "result";
+type Screen = "category" | "game" | "ad-result" | "result";
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [screen, setScreen] = useState<Screen>("category");
   const [choices, setChoices] = useState<("A" | "B")[]>([]);
 
+  // 토스 인앱 뒤로가기 제스처 대응 (브라우저 히스토리 관리)
+  const navigate = useCallback((newScreen: Screen) => {
+    setScreen(newScreen);
+    if (newScreen !== "category") {
+      window.history.pushState({ screen: newScreen }, "");
+    }
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      // 뒤로가기 시 카테고리 선택 화면으로
+      setSelectedCategory(null);
+      setScreen("category");
+      setChoices([]);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const handleSelectCategory = (cat: Category) => {
     setSelectedCategory(cat);
     setChoices([]);
-    setScreen("game");
+    navigate("game");
   };
 
   const handleBack = () => {
     setSelectedCategory(null);
     setScreen("category");
+    setChoices([]);
+    // 히스토리 뒤로가기
+    if (window.history.state?.screen) {
+      window.history.back();
+    }
   };
 
   const handleFinish = (allChoices: ("A" | "B")[]) => {
     setChoices(allChoices);
-    setScreen("ad-result"); // Show ad before result
+    navigate("ad-result");
   };
 
   if (screen === "ad-result") {
-    return <AdBreak onClose={() => setScreen("result")} />;
+    return <AdBreak onClose={() => navigate("result")} />;
   }
 
   if (screen === "result" && selectedCategory) {
