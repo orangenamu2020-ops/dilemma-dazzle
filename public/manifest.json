@@ -1,0 +1,17 @@
+{
+  "name": "밸런스 게임 심리테스트",
+  "short_name": "밸런스 게임",
+  "description": "선택으로 알아보는 나의 진짜 성격",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f7f7",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
