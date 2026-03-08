@@ -65,7 +65,7 @@ export function AdBreak({ onClose }: AdBreakProps) {
             />
           </div>
           <p className="text-xs text-muted-foreground">
-            {Math.ceil((100 - progress) / 20)}초 남음
+            광고가 끝나면 결과를 확인할 수 있어요
           </p>
         </div>
       )}

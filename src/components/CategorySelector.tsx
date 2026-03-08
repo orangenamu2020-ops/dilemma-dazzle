@@ -6,7 +6,7 @@ interface CategorySelectorProps {
 
 export function CategorySelector({ onSelect }: CategorySelectorProps) {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col max-w-lg mx-auto">
       {/* Header */}
       <div className="px-6 pt-12 pb-6">
         <h1 className="text-2xl font-bold text-foreground">밸런스 게임 ⚖️</h1>
@@ -32,6 +32,13 @@ export function CategorySelector({ onSelect }: CategorySelectorProps) {
               <span className="text-3xl">{cat.emoji}</span>
               <h3 className="font-semibold text-foreground mt-3 text-base">{cat.name}</h3>
               <p className="text-muted-foreground text-xs mt-1">{cat.description}</p>
+              <div className="flex items-center gap-1 mt-2">
+                <span className="text-[10px] text-muted-foreground">
+                  {cat.id === "random" ? "랜덤 8문제" : "8문제"}
+                </span>
+                <span className="text-[10px] text-muted-foreground">·</span>
+                <span className="text-[10px] text-muted-foreground">약 2분</span>
+              </div>
             </button>
           ))}
         </div>

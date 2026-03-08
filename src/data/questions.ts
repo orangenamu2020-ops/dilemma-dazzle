@@ -98,7 +98,7 @@ export const questions: Question[] = [
 
 export function getQuestionsByCategory(categoryId: string): Question[] {
   if (categoryId === "random") {
-    return [...questions].sort(() => Math.random() - 0.5);
+    return [...questions].sort(() => Math.random() - 0.5).slice(0, 8);
   }
   return questions.filter((q) => q.category === categoryId);
 }
