@@ -1,4 +1,7 @@
-import { ArrowLeft, Share2 } from "lucide-react";
+import { ArrowLeft, Share2, Copy } from "lucide-react";
+import { shareResult, shareToKakao } from "@/lib/share";
+import { isTossApp } from "@/lib/toss";
+import { toast } from "sonner";
 
 interface PersonalityResultProps {
   emoji: string;
@@ -15,13 +18,17 @@ interface PersonalityResultProps {
 export function PersonalityResultScreen({
   emoji, title, description, traits, tip, deepAnalysis, categoryName, onBack, onRetry,
 }: PersonalityResultProps) {
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `나의 ${categoryName} 유형: ${title}`,
-        text: `${emoji} ${title}\n${description}\n\n밸런스 게임으로 나의 유형을 알아보세요!`,
-      }).catch(() => {});
+  const shareData = { categoryName, title, emoji, description };
+
+  const handleShare = async () => {
+    const success = await shareResult(shareData);
+    if (success && !navigator.share) {
+      toast.success("결과가 클립보드에 복사되었어요!");
     }
+  };
+
+  const handleKakaoShare = () => {
+    shareToKakao(shareData);
   };
 
   return (
