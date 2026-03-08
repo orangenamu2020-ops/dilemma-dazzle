@@ -57,7 +57,6 @@ const Index = () => {
       categoryEmoji={selectedCategory.emoji}
       categoryName={selectedCategory.name}
       onBack={handleBack}
-      onShowAd={handleMidAd}
       onFinish={handleFinish}
     />
   );
