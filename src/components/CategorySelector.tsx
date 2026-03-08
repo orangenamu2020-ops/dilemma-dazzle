@@ -11,8 +11,12 @@ export function CategorySelector({ onSelect }: CategorySelectorProps) {
       <div className="px-6 pt-12 pb-6">
         <h1 className="text-2xl font-bold text-foreground">밸런스 게임 ⚖️</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          둘 중 하나, 당신의 선택은?
+          선택으로 알아보는 나의 진짜 성격
         </p>
+        <div className="mt-3 inline-flex items-center gap-1.5 bg-primary/10 text-primary rounded-full px-3 py-1.5">
+          <span className="text-xs">🔍</span>
+          <span className="text-xs font-medium">게임 끝에 당신의 심리 분석 결과가 기다려요</span>
+        </div>
       </div>
 
       {/* Categories */}
