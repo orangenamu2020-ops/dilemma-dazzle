@@ -7,7 +7,7 @@ interface BalanceGameProps {
   categoryEmoji: string;
   categoryName: string;
   onBack: () => void;
-  onShowAd: () => void;
+  
   onFinish: (choices: ("A" | "B")[]) => void;
 }
 
