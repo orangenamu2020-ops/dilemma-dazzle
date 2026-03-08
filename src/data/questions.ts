@@ -19,7 +19,9 @@ export const categories: Category[] = [
   { id: "friends", name: "친구", emoji: "🤝", description: "우정 사이의 딜레마", color: "a" },
   { id: "food", name: "음식", emoji: "🍕", description: "먹는 것에 진심인 당신", color: "b" },
   { id: "life", name: "일상", emoji: "🌟", description: "인생의 크고 작은 선택", color: "a" },
-  { id: "random", name: "랜덤", emoji: "🎲", description: "예측 불가 질문들", color: "b" },
+  { id: "superpower", name: "초능력", emoji: "🦸", description: "판타지 능력 대결", color: "a" },
+  { id: "money", name: "돈/경제", emoji: "💰", description: "현실적인 돈 고민들", color: "b" },
+  { id: "random", name: "랜덤", emoji: "🎲", description: "예측 불가 질문들", color: "a" },
 ];
 
 export const questions: Question[] = [
