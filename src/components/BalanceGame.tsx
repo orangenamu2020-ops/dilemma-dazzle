@@ -50,11 +50,6 @@ export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, on
       setSelected(null);
       setCurrentIndex((prev) => prev + 1);
       setAnimating(false);
-
-      // Show ad every 3 questions
-      if ((currentIndex + 1) % 3 === 0) {
-        onShowAd();
-      }
     }, 300);
   };
 
