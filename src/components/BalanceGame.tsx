@@ -42,7 +42,7 @@ export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, on
 
   const handleNext = () => {
     if (isLast) {
-      onBack();
+      onFinish([...allChoices]);
       return;
     }
     setAnimating(true);
