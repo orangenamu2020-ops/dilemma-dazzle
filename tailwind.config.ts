@@ -47,6 +47,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "choice-a": {
+          DEFAULT: "hsl(var(--choice-a))",
+          light: "hsl(var(--choice-a-light))",
+        },
+        "choice-b": {
+          DEFAULT: "hsl(var(--choice-b))",
+          light: "hsl(var(--choice-b-light))",
+        },
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        "surface-elevated": "hsl(var(--surface-elevated))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
