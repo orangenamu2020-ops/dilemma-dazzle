@@ -33,11 +33,9 @@ export function CategorySelector({ onSelect }: CategorySelectorProps) {
               <h3 className="font-semibold text-foreground mt-3 text-base">{cat.name}</h3>
               <p className="text-muted-foreground text-xs mt-1">{cat.description}</p>
               <div className="flex items-center gap-1 mt-2">
-                <span className="text-[10px] text-muted-foreground">
-                  {cat.id === "random" ? "랜덤 8문제" : "8문제"}
-                </span>
+                <span className="text-[10px] text-muted-foreground">10문제</span>
                 <span className="text-[10px] text-muted-foreground">·</span>
-                <span className="text-[10px] text-muted-foreground">약 2분</span>
+                <span className="text-[10px] text-muted-foreground">약 3분</span>
               </div>
             </button>
           ))}
