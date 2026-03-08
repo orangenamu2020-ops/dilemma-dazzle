@@ -1,4 +1,7 @@
-import { ArrowLeft, Share2 } from "lucide-react";
+import { ArrowLeft, Share2, Copy } from "lucide-react";
+import { shareResult, shareToKakao } from "@/lib/share";
+import { isTossApp } from "@/lib/toss";
+import { toast } from "sonner";
 
 interface PersonalityResultProps {
   emoji: string;
@@ -15,13 +18,17 @@ interface PersonalityResultProps {
 export function PersonalityResultScreen({
   emoji, title, description, traits, tip, deepAnalysis, categoryName, onBack, onRetry,
 }: PersonalityResultProps) {
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `나의 ${categoryName} 유형: ${title}`,
-        text: `${emoji} ${title}\n${description}\n\n밸런스 게임으로 나의 유형을 알아보세요!`,
-      }).catch(() => {});
+  const shareData = { categoryName, title, emoji, description };
+
+  const handleShare = async () => {
+    const success = await shareResult(shareData);
+    if (success && !navigator.share) {
+      toast.success("결과가 클립보드에 복사되었어요!");
     }
+  };
+
+  const handleKakaoShare = () => {
+    shareToKakao(shareData);
   };
 
   return (
@@ -94,19 +101,18 @@ export function PersonalityResultScreen({
 
         {/* Share buttons */}
         <div className="flex gap-2">
-          <button
-            onClick={() => {
-              // TODO: Kakao SDK 연동
-              console.log("카카오톡 공유");
-            }}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm animate-scale-press"
-            style={{ backgroundColor: "#FEE500", color: "#191919" }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3C6.48 3 2 6.54 2 10.86c0 2.78 1.8 5.22 4.52 6.6-.2.72-.72 2.6-.82 3.02-.14.52.19.51.4.37.16-.1 2.6-1.76 3.66-2.48.72.1 1.46.16 2.24.16 5.52 0 10-3.54 10-7.86S17.52 3 12 3Z" fill="#191919"/>
-            </svg>
-            카카오톡
-          </button>
+          {!isTossApp() && (
+            <button
+              onClick={handleKakaoShare}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm animate-scale-press"
+              style={{ backgroundColor: "#FEE500", color: "#191919" }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3C6.48 3 2 6.54 2 10.86c0 2.78 1.8 5.22 4.52 6.6-.2.72-.72 2.6-.82 3.02-.14.52.19.51.4.37.16-.1 2.6-1.76 3.66-2.48.72.1 1.46.16 2.24.16 5.52 0 10-3.54 10-7.86S17.52 3 12 3Z" fill="#191919"/>
+              </svg>
+              카카오톡
+            </button>
+          )}
           <button
             onClick={handleShare}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-secondary text-secondary-foreground font-semibold text-sm animate-scale-press"
