@@ -29,12 +29,6 @@ const Index = () => {
     setScreen("ad-result"); // Show ad before result
   };
 
-  const handleMidAd = () => setScreen("ad-mid");
-
-  if (screen === "ad-mid") {
-    return <AdBreak onClose={() => setScreen("game")} />;
-  }
-
   if (screen === "ad-result") {
     return <AdBreak onClose={() => setScreen("result")} />;
   }
@@ -63,7 +57,6 @@ const Index = () => {
       categoryEmoji={selectedCategory.emoji}
       categoryName={selectedCategory.name}
       onBack={handleBack}
-      onShowAd={handleMidAd}
       onFinish={handleFinish}
     />
   );

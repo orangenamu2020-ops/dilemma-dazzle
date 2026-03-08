@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { type Question } from "@/data/questions";
 import { ArrowLeft } from "lucide-react";
 
@@ -7,37 +7,22 @@ interface BalanceGameProps {
   categoryEmoji: string;
   categoryName: string;
   onBack: () => void;
-  onShowAd: () => void;
   onFinish: (choices: ("A" | "B")[]) => void;
 }
 
-export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, onShowAd, onFinish }: BalanceGameProps) {
+export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, onFinish }: BalanceGameProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<"A" | "B" | null>(null);
-  const [votes, setVotes] = useState<Record<number, { a: number; b: number }>>({});
   const [animating, setAnimating] = useState(false);
   const [allChoices, setAllChoices] = useState<("A" | "B")[]>([]);
 
   const question = questions[currentIndex];
   const isLast = currentIndex >= questions.length - 1;
 
-  const getVotes = useCallback((qId: number) => {
-    if (votes[qId]) return votes[qId];
-    const a = Math.floor(Math.random() * 70) + 15;
-    return { a, b: 100 - a };
-  }, [votes]);
-
   const handleSelect = (choice: "A" | "B") => {
     if (selected || animating) return;
     setSelected(choice);
     setAllChoices((prev) => [...prev, choice]);
-
-    const currentVotes = getVotes(question.id);
-    const newVotes = {
-      a: choice === "A" ? currentVotes.a + 1 : currentVotes.a,
-      b: choice === "B" ? currentVotes.b + 1 : currentVotes.b,
-    };
-    setVotes((prev) => ({ ...prev, [question.id]: newVotes }));
   };
 
   const handleNext = () => {
@@ -50,18 +35,8 @@ export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, on
       setSelected(null);
       setCurrentIndex((prev) => prev + 1);
       setAnimating(false);
-
-      // Show ad every 3 questions
-      if ((currentIndex + 1) % 3 === 0) {
-        onShowAd();
-      }
     }, 300);
   };
-
-  const currentVotes = votes[question.id];
-  const totalVotes = currentVotes ? currentVotes.a + currentVotes.b : 0;
-  const pctA = totalVotes > 0 ? Math.round((currentVotes!.a / totalVotes) * 100) : 50;
-  const pctB = totalVotes > 0 ? Math.round((currentVotes!.b / totalVotes) * 100) : 50;
 
   return (
     <div className={`min-h-screen bg-background flex flex-col transition-opacity duration-300 ${animating ? "opacity-0" : "opacity-100"}`}>
@@ -111,15 +86,9 @@ export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, on
             <span className="text-xs font-bold text-choice-a">A</span>
             <p className="font-semibold text-foreground mt-1 text-base leading-snug">{question.choiceA}</p>
           </div>
-          {selected && currentVotes && (
-            <div className="mt-3 relative z-10 animate-fade-in">
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-bold text-choice-a">{pctA}%</span>
-                <span className="text-muted-foreground">{currentVotes.a}명</span>
-              </div>
-              <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                <div className="h-full bg-choice-a rounded-full animate-progress" style={{ width: `${pctA}%` }} />
-              </div>
+          {selected === "A" && (
+            <div className="mt-2 relative z-10 animate-fade-in">
+              <span className="text-xs font-medium text-choice-a">✓ 선택완료</span>
             </div>
           )}
         </button>
@@ -147,15 +116,9 @@ export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, on
             <span className="text-xs font-bold text-choice-b">B</span>
             <p className="font-semibold text-foreground mt-1 text-base leading-snug">{question.choiceB}</p>
           </div>
-          {selected && currentVotes && (
-            <div className="mt-3 relative z-10 animate-fade-in">
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-bold text-choice-b">{pctB}%</span>
-                <span className="text-muted-foreground">{currentVotes.b}명</span>
-              </div>
-              <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                <div className="h-full bg-choice-b rounded-full animate-progress" style={{ width: `${pctB}%` }} />
-              </div>
+          {selected === "B" && (
+            <div className="mt-2 relative z-10 animate-fade-in">
+              <span className="text-xs font-medium text-choice-b">✓ 선택완료</span>
             </div>
           )}
         </button>
