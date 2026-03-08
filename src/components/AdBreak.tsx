@@ -1,78 +1,88 @@
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { Play, Loader2 } from "lucide-react";
 
 interface AdBreakProps {
   onClose: () => void;
 }
 
-const adContents = [
-  { emoji: "☕", title: "오늘도 수고한 당신에게", subtitle: "카페 할인 쿠폰 받기", tag: "광고" },
-  { emoji: "🎁", title: "밸런스 게임 공유하면", subtitle: "포인트 100P 적립!", tag: "이벤트" },
-  { emoji: "📱", title: "더 재미있는 미니게임", subtitle: "토스에서 새로운 게임 도전!", tag: "추천" },
-  { emoji: "🍔", title: "점심 뭐 먹지?", subtitle: "배달 앱 3천원 할인 쿠폰", tag: "광고" },
-];
-
 export function AdBreak({ onClose }: AdBreakProps) {
-  const [countdown, setCountdown] = useState(3);
-  const [canClose, setCanClose] = useState(false);
-  const ad = adContents[Math.floor(Math.random() * adContents.length)];
+  const [phase, setPhase] = useState<"intro" | "watching" | "done">("intro");
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    if (phase !== "watching") return;
+    const duration = 5000; // 5초 광고
+    const interval = 50;
+    const step = (interval / duration) * 100;
     const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          setCanClose(true);
+      setProgress((prev) => {
+        if (prev >= 100) {
           clearInterval(timer);
-          return 0;
+          setPhase("done");
+          return 100;
         }
-        return prev - 1;
+        return prev + step;
       });
-    }, 1000);
+    }, interval);
     return () => clearInterval(timer);
-  }, []);
+  }, [phase]);
 
   return (
-    <div className="fixed inset-0 bg-foreground/50 z-50 flex items-end justify-center animate-fade-in">
-      <div className="bg-card w-full max-w-md rounded-t-3xl p-6 animate-slide-up">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-5">
-          <span className="text-[10px] font-medium text-muted-foreground bg-secondary px-2.5 py-1 rounded-full">
-            {ad.tag}
-          </span>
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+      {phase === "intro" && (
+        <div className="flex flex-col items-center text-center animate-fade-in">
+          <span className="text-6xl mb-6">🔮</span>
+          <h2 className="text-xl font-bold text-foreground mb-2">
+            당신의 분석 결과가 준비되었어요!
+          </h2>
+          <p className="text-sm text-muted-foreground mb-8 leading-relaxed max-w-xs">
+            짧은 영상 광고를 시청하면<br />나에 대한 깊이 있는 분석 결과를 확인할 수 있어요
+          </p>
           <button
-            onClick={canClose ? onClose : undefined}
-            className={`p-1.5 rounded-full transition-all ${canClose ? "bg-secondary text-foreground hover:bg-muted" : "bg-secondary/50 text-muted-foreground"}`}
+            onClick={() => setPhase("watching")}
+            className="flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base animate-scale-press transition-all hover:opacity-90"
           >
-            {canClose ? (
-              <X className="w-4 h-4" />
-            ) : (
-              <span className="text-[10px] font-bold w-4 h-4 flex items-center justify-center">{countdown}</span>
-            )}
+            <Play className="w-5 h-5" fill="currentColor" />
+            광고 보고 결과 확인하기
+          </button>
+          <p className="text-xs text-muted-foreground mt-4">약 5초 소요</p>
+        </div>
+      )}
+
+      {phase === "watching" && (
+        <div className="flex flex-col items-center text-center w-full max-w-sm animate-fade-in">
+          {/* 영상 광고 영역 (앱인토스 SDK에서 대체될 부분) */}
+          <div className="w-full aspect-video bg-secondary rounded-2xl flex flex-col items-center justify-center mb-6 border border-border">
+            <Loader2 className="w-8 h-8 text-muted-foreground animate-spin mb-3" />
+            <span className="text-xs text-muted-foreground font-medium">광고 재생 중...</span>
+            <span className="text-[10px] text-muted-foreground mt-1">앱인토스 리워드 광고 영역</span>
+          </div>
+          {/* 프로그레스 바 */}
+          <div className="w-full h-1.5 bg-secondary rounded-full overflow-hidden mb-3">
+            <div
+              className="h-full bg-primary rounded-full transition-all duration-100 ease-linear"
+              style={{ width: `${Math.min(progress, 100)}%` }}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {Math.ceil((100 - progress) / 20)}초 남음
+          </p>
+        </div>
+      )}
+
+      {phase === "done" && (
+        <div className="flex flex-col items-center text-center animate-fade-in">
+          <span className="text-5xl mb-4">✅</span>
+          <h3 className="text-lg font-bold text-foreground mb-2">광고 시청 완료!</h3>
+          <p className="text-sm text-muted-foreground mb-6">분석 결과를 확인해보세요</p>
+          <button
+            onClick={onClose}
+            className="px-10 py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base animate-scale-press"
+          >
+            결과 보러 가기 🎉
           </button>
         </div>
-
-        {/* Ad Content */}
-        <div className="text-center py-6">
-          <span className="text-5xl">{ad.emoji}</span>
-          <h3 className="font-bold text-foreground text-lg mt-4">{ad.title}</h3>
-          <p className="text-muted-foreground text-sm mt-1">{ad.subtitle}</p>
-        </div>
-
-        {/* CTA */}
-        <button
-          onClick={onClose}
-          className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold text-sm mt-2 animate-scale-press"
-        >
-          자세히 보기
-        </button>
-
-        <button
-          onClick={canClose ? onClose : undefined}
-          className={`w-full py-3 text-sm mt-2 transition-colors ${canClose ? "text-muted-foreground" : "text-transparent"}`}
-        >
-          건너뛰기
-        </button>
-      </div>
+      )}
     </div>
   );
 }

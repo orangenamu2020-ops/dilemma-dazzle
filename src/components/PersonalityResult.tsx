@@ -6,13 +6,14 @@ interface PersonalityResultProps {
   description: string;
   traits: string[];
   tip: string;
+  deepAnalysis: string;
   categoryName: string;
   onBack: () => void;
   onRetry: () => void;
 }
 
 export function PersonalityResultScreen({
-  emoji, title, description, traits, tip, categoryName, onBack, onRetry,
+  emoji, title, description, traits, tip, deepAnalysis, categoryName, onBack, onRetry,
 }: PersonalityResultProps) {
   const handleShare = () => {
     if (navigator.share) {
@@ -36,21 +37,19 @@ export function PersonalityResultScreen({
         </button>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-6">
-        {/* Emoji */}
-        <div className="animate-bounce-in">
-          <span className="text-7xl">{emoji}</span>
+      <div className="flex-1 px-6 pb-4 overflow-y-auto">
+        {/* Emoji & Title */}
+        <div className="flex flex-col items-center pt-6">
+          <div className="animate-bounce-in">
+            <span className="text-7xl">{emoji}</span>
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mt-5 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+            {title}
+          </h2>
+          <p className="text-muted-foreground text-sm text-center mt-3 leading-relaxed max-w-xs animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
+            {description}
+          </p>
         </div>
-
-        {/* Title */}
-        <h2 className="text-2xl font-bold text-foreground mt-6 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
-          {title}
-        </h2>
-
-        {/* Description */}
-        <p className="text-muted-foreground text-sm text-center mt-3 leading-relaxed max-w-xs animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
-          {description}
-        </p>
 
         {/* Traits */}
         <div className="flex gap-2 mt-5 flex-wrap justify-center animate-slide-up" style={{ animationDelay: "0.45s", animationFillMode: "both" }}>
@@ -64,14 +63,25 @@ export function PersonalityResultScreen({
           ))}
         </div>
 
+        {/* Deep Analysis Card */}
+        <div className="mt-7 animate-slide-up" style={{ animationDelay: "0.55s", animationFillMode: "both" }}>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-sm">🔍</span>
+            <h3 className="text-sm font-bold text-foreground">깊이 있는 분석</h3>
+          </div>
+          <div className="bg-card rounded-2xl p-5 border border-border">
+            <p className="text-sm text-foreground leading-[1.8]">{deepAnalysis}</p>
+          </div>
+        </div>
+
         {/* Tip Card */}
-        <div className="mt-8 w-full bg-card rounded-2xl p-5 border border-border animate-slide-up" style={{ animationDelay: "0.6s", animationFillMode: "both" }}>
+        <div className="mt-4 bg-primary/5 rounded-2xl p-5 border border-primary/10 animate-slide-up" style={{ animationDelay: "0.7s", animationFillMode: "both" }}>
           <p className="text-sm text-foreground leading-relaxed">{tip}</p>
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="px-5 pb-8 pt-4 space-y-3 animate-slide-up" style={{ animationDelay: "0.75s", animationFillMode: "both" }}>
+      <div className="px-5 pb-8 pt-4 space-y-3 animate-slide-up" style={{ animationDelay: "0.85s", animationFillMode: "both" }}>
         <button
           onClick={onRetry}
           className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base animate-scale-press"
