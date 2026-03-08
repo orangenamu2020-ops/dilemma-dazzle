@@ -25,7 +25,7 @@ export function PersonalityResultScreen({
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col max-w-lg mx-auto">
       {/* Header */}
       <div className="px-4 pt-4 pb-2 flex items-center justify-between">
         <button onClick={onBack} className="p-2 -ml-2 rounded-xl hover:bg-secondary transition-colors">
