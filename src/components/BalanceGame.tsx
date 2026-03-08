@@ -8,13 +8,15 @@ interface BalanceGameProps {
   categoryName: string;
   onBack: () => void;
   onShowAd: () => void;
+  onFinish: (choices: ("A" | "B")[]) => void;
 }
 
-export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, onShowAd }: BalanceGameProps) {
+export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, onShowAd, onFinish }: BalanceGameProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<"A" | "B" | null>(null);
   const [votes, setVotes] = useState<Record<number, { a: number; b: number }>>({});
   const [animating, setAnimating] = useState(false);
+  const [allChoices, setAllChoices] = useState<("A" | "B")[]>([]);
 
   const question = questions[currentIndex];
   const isLast = currentIndex >= questions.length - 1;
@@ -28,6 +30,7 @@ export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, on
   const handleSelect = (choice: "A" | "B") => {
     if (selected || animating) return;
     setSelected(choice);
+    setAllChoices((prev) => [...prev, choice]);
 
     const currentVotes = getVotes(question.id);
     const newVotes = {
@@ -39,7 +42,7 @@ export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, on
 
   const handleNext = () => {
     if (isLast) {
-      onBack();
+      onFinish([...allChoices]);
       return;
     }
     setAnimating(true);
