@@ -30,6 +30,7 @@ export function BalanceGame({ questions, categoryEmoji, categoryName, onBack, on
   const handleSelect = (choice: "A" | "B") => {
     if (selected || animating) return;
     setSelected(choice);
+    setAllChoices((prev) => [...prev, choice]);
 
     const currentVotes = getVotes(question.id);
     const newVotes = {
