@@ -47,6 +47,12 @@
 
   <body>
     <div id="root"></div>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" integrity="sha384-DKYJZ8NLiK8MN4/C5P2dtSmLQ4KwPaoqAfyA/DQJziDlhOITfPeerS0YEJqjKHE" crossorigin="anonymous"></script>
+    <script>
+      if (window.Kakao && !window.Kakao.isInitialized()) {
+        window.Kakao.init('36ad02ff368646499edc2ac73958dc4c');
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
