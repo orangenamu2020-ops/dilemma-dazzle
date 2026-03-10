@@ -20,7 +20,7 @@ export function isMobile(): boolean {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-const INTERSTITIAL_AD_ID = "ait-ad-test-interstitial-id";
+const AD_GROUP_ID = "ait-ad-test-interstitial-id";
 
 /**
  * 앱인토스 전면형 광고 표시
@@ -31,45 +31,42 @@ export async function showTossInterstitialAd(): Promise<boolean> {
   try {
     const { GoogleAdMob } = await import("@apps-in-toss/web-framework");
 
-    // 광고 로드 확인
-    const isLoaded = await GoogleAdMob.isAppsInTossAdMobLoaded({ adUnitId: INTERSTITIAL_AD_ID });
-    
-    if (!isLoaded) {
-      // 광고 로드
-      await new Promise<void>((resolve, reject) => {
-        const unsubscribe = GoogleAdMob.loadAppsInTossAdMob({
-          onEvent: (event) => {
-            if (event.type === "loaded") {
-              console.log("[TossAd] 전면 광고 로드 완료");
-              unsubscribe();
-              resolve();
-            }
-            if (event.type === "failed_to_load") {
-              console.error("[TossAd] 광고 로드 실패");
-              unsubscribe();
-              reject(new Error("Ad load failed"));
-            }
-          },
-          onError: (err) => {
-            console.error("[TossAd] 로드 에러", err);
-            unsubscribe();
-            reject(err);
-          },
-          options: { adUnitId: INTERSTITIAL_AD_ID, adType: "interstitial" },
-        });
-      });
+    const isSupported = GoogleAdMob.loadAppsInTossAdMob.isSupported();
+    if (isSupported !== true) {
+      console.log("[TossAd] AdMob 미지원 환경, 시뮬레이션 실행");
+      return simulateAd();
     }
 
-    // 광고 표시
+    // 1) 광고 로드
+    await new Promise<void>((resolve, reject) => {
+      const unsubscribe = GoogleAdMob.loadAppsInTossAdMob({
+        options: { adGroupId: AD_GROUP_ID },
+        onEvent: (event) => {
+          if (event.type === "loaded") {
+            console.log("[TossAd] 전면 광고 로드 완료");
+            unsubscribe();
+            resolve();
+          }
+        },
+        onError: (err) => {
+          console.error("[TossAd] 로드 에러", err);
+          unsubscribe();
+          reject(err);
+        },
+      });
+    });
+
+    // 2) 광고 표시
     return new Promise<boolean>((resolve) => {
       const unsubscribe = GoogleAdMob.showAppsInTossAdMob({
+        options: { adGroupId: AD_GROUP_ID },
         onEvent: (event) => {
-          if (event.type === "dismissed" || event.type === "closed") {
+          if (event.type === "dismissed") {
             console.log("[TossAd] 전면 광고 닫힘");
             unsubscribe();
             resolve(true);
           }
-          if (event.type === "failed_to_show") {
+          if (event.type === "failedToShow") {
             console.error("[TossAd] 광고 표시 실패");
             unsubscribe();
             resolve(false);
@@ -80,7 +77,6 @@ export async function showTossInterstitialAd(): Promise<boolean> {
           unsubscribe();
           resolve(false);
         },
-        options: { adUnitId: INTERSTITIAL_AD_ID, adType: "interstitial" },
       });
     });
   } catch (err) {
