@@ -30,45 +30,57 @@ const INTERSTITIAL_AD_ID = "ait-ad-test-interstitial-id";
 export async function showTossInterstitialAd(): Promise<boolean> {
   try {
     const { GoogleAdMob } = await import("@apps-in-toss/web-framework");
-    const isSupported = await GoogleAdMob.isSupported();
 
-    if (!isSupported) {
-      console.log("[TossAd] AdMob 미지원 환경, 시뮬레이션 실행");
-      return simulateAd();
+    // 광고 로드 확인
+    const isLoaded = await GoogleAdMob.isAppsInTossAdMobLoaded({ adUnitId: INTERSTITIAL_AD_ID });
+    
+    if (!isLoaded) {
+      // 광고 로드
+      await new Promise<void>((resolve, reject) => {
+        const unsubscribe = GoogleAdMob.loadAppsInTossAdMob({
+          onEvent: (event) => {
+            if (event.type === "loaded") {
+              console.log("[TossAd] 전면 광고 로드 완료");
+              unsubscribe();
+              resolve();
+            }
+            if (event.type === "failed_to_load") {
+              console.error("[TossAd] 광고 로드 실패");
+              unsubscribe();
+              reject(new Error("Ad load failed"));
+            }
+          },
+          onError: (err) => {
+            console.error("[TossAd] 로드 에러", err);
+            unsubscribe();
+            reject(err);
+          },
+          options: { adUnitId: INTERSTITIAL_AD_ID, adType: "interstitial" },
+        });
+      });
     }
 
-    return new Promise((resolve) => {
-      // 1) 광고 로드
-      const unsubscribeLoad = GoogleAdMob.loadAdMobInterstitialAd({
-        adUnitId: INTERSTITIAL_AD_ID,
+    // 광고 표시
+    return new Promise<boolean>((resolve) => {
+      const unsubscribe = GoogleAdMob.showAppsInTossAdMob({
         onEvent: (event) => {
-          if (event.type === "loaded") {
-            console.log("[TossAd] 전면 광고 로드 완료");
-            unsubscribeLoad();
-
-            // 2) 광고 표시
-            const unsubscribeShow = GoogleAdMob.showAdMobInterstitialAd({
-              adUnitId: INTERSTITIAL_AD_ID,
-              onEvent: (showEvent) => {
-                if (showEvent.type === "dismissed") {
-                  console.log("[TossAd] 전면 광고 닫힘");
-                  unsubscribeShow();
-                  resolve(true);
-                }
-                if (showEvent.type === "failed_to_show") {
-                  console.error("[TossAd] 광고 표시 실패");
-                  unsubscribeShow();
-                  resolve(false);
-                }
-              },
-            });
+          if (event.type === "dismissed" || event.type === "closed") {
+            console.log("[TossAd] 전면 광고 닫힘");
+            unsubscribe();
+            resolve(true);
           }
-          if (event.type === "failed_to_load") {
-            console.error("[TossAd] 광고 로드 실패");
-            unsubscribeLoad();
+          if (event.type === "failed_to_show") {
+            console.error("[TossAd] 광고 표시 실패");
+            unsubscribe();
             resolve(false);
           }
         },
+        onError: (err) => {
+          console.error("[TossAd] 표시 에러", err);
+          unsubscribe();
+          resolve(false);
+        },
+        options: { adUnitId: INTERSTITIAL_AD_ID, adType: "interstitial" },
       });
     });
   } catch (err) {
