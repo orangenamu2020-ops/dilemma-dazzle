@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { Play, Loader2, SkipForward } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Play, Loader2 } from "lucide-react";
+import { showTossInterstitialAd } from "@/lib/toss";
 
 interface AdBreakProps {
   onClose: () => void;
@@ -8,31 +9,36 @@ interface AdBreakProps {
 export function AdBreak({ onClose }: AdBreakProps) {
   const [phase, setPhase] = useState<"intro" | "watching" | "done">("intro");
   const [progress, setProgress] = useState(0);
-  const [canSkip, setCanSkip] = useState(false);
+  const adCalled = useRef(false);
 
+  // 광고 실행 (watching 단계 진입 시)
   useEffect(() => {
-    if (phase !== "watching") return;
-    const duration = 5000; // 5초 광고
+    if (phase !== "watching" || adCalled.current) return;
+    adCalled.current = true;
+
+    // 프로그레스 바 애니메이션 (5초)
+    const duration = 5000;
     const interval = 50;
     const step = (interval / duration) * 100;
-
-    // 3초 후 스킵 가능
-    const skipTimer = setTimeout(() => setCanSkip(true), 3000);
-
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(timer);
-          setPhase("done");
           return 100;
         }
         return prev + step;
       });
     }, interval);
-    return () => {
+
+    // 실제 앱인토스 전면 광고 호출
+    showTossInterstitialAd().then((success) => {
       clearInterval(timer);
-      clearTimeout(skipTimer);
-    };
+      setProgress(100);
+      console.log("[AdBreak] 광고 결과:", success);
+      setPhase("done");
+    });
+
+    return () => clearInterval(timer);
   }, [phase]);
 
   return (
@@ -58,30 +64,17 @@ export function AdBreak({ onClose }: AdBreakProps) {
 
       {phase === "watching" && (
         <div className="flex flex-col items-center text-center w-full max-w-sm animate-fade-in">
-          {/* 광고 영역 (앱인토스 SDK 연동 시 대체) */}
-          <div className="w-full aspect-video bg-secondary rounded-2xl flex flex-col items-center justify-center mb-6 border border-border relative">
+          <div className="w-full aspect-video bg-secondary rounded-2xl flex flex-col items-center justify-center mb-6 border border-border">
             <Loader2 className="w-8 h-8 text-muted-foreground animate-spin mb-3" />
-            <span className="text-xs text-muted-foreground font-medium">광고 재생 중...</span>
-            {canSkip && (
-              <button
-                onClick={() => setPhase("done")}
-                className="absolute bottom-3 right-3 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-foreground/80 text-background text-xs font-medium animate-fade-in"
-              >
-                <SkipForward className="w-3 h-3" />
-                건너뛰기
-              </button>
-            )}
+            <span className="text-xs text-muted-foreground font-medium">전면 광고 로딩 중...</span>
           </div>
-          {/* 프로그레스 바 */}
           <div className="w-full h-1.5 bg-secondary rounded-full overflow-hidden mb-3">
             <div
               className="h-full bg-primary rounded-full transition-all duration-100 ease-linear"
               style={{ width: `${Math.min(progress, 100)}%` }}
             />
           </div>
-          <p className="text-xs text-muted-foreground">
-            {canSkip ? "건너뛰기 가능" : "잠시만 기다려주세요..."}
-          </p>
+          <p className="text-xs text-muted-foreground">잠시만 기다려주세요...</p>
         </div>
       )}
 
