@@ -1,7 +1,5 @@
 import { ArrowLeft, Share2 } from "lucide-react";
 import { shareResult, shareToKakao } from "@/lib/share";
-import { isTossApp } from "@/lib/toss";
-import { toast } from "sonner";
 
 interface PersonalityResultProps {
   emoji: string;
@@ -16,19 +14,24 @@ interface PersonalityResultProps {
 }
 
 export function PersonalityResultScreen({
-  emoji, title, description, traits, tip, deepAnalysis, categoryName, onBack, onRetry,
+  emoji,
+  title,
+  description,
+  traits,
+  tip,
+  deepAnalysis,
+  categoryName,
+  onBack,
+  onRetry,
 }: PersonalityResultProps) {
   const shareData = { categoryName, title, emoji, description };
 
   const handleShare = async () => {
-    const success = await shareResult(shareData);
-    if (success && !navigator.share) {
-      toast.success("결과가 클립보드에 복사되었어요!");
-    }
+    await shareResult(shareData);
   };
 
-  const handleKakaoShare = () => {
-    shareToKakao(shareData);
+  const handleKakaoShare = async () => {
+    await shareToKakao(shareData);
   };
 
   return (
@@ -50,19 +53,34 @@ export function PersonalityResultScreen({
           <div className="animate-bounce-in">
             <span className="text-7xl">{emoji}</span>
           </div>
-          <span className="inline-block mt-4 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+
+          <span
+            className="inline-block mt-4 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium animate-slide-up"
+            style={{ animationDelay: "0.1s", animationFillMode: "both" }}
+          >
             {categoryName}
           </span>
-          <h2 className="text-2xl font-bold text-foreground mt-3 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+
+          <h2
+            className="text-2xl font-bold text-foreground mt-3 animate-slide-up"
+            style={{ animationDelay: "0.15s", animationFillMode: "both" }}
+          >
             {title}
           </h2>
-          <p className="text-muted-foreground text-sm text-center mt-3 leading-relaxed max-w-xs animate-slide-up" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
+
+          <p
+            className="text-muted-foreground text-sm text-center mt-3 leading-relaxed max-w-xs animate-slide-up"
+            style={{ animationDelay: "0.3s", animationFillMode: "both" }}
+          >
             {description}
           </p>
         </div>
 
         {/* Traits */}
-        <div className="flex gap-2 mt-5 flex-wrap justify-center animate-slide-up" style={{ animationDelay: "0.45s", animationFillMode: "both" }}>
+        <div
+          className="flex gap-2 mt-5 flex-wrap justify-center animate-slide-up"
+          style={{ animationDelay: "0.45s", animationFillMode: "both" }}
+        >
           {traits.map((trait) => (
             <span
               key={trait}
@@ -85,7 +103,10 @@ export function PersonalityResultScreen({
         </div>
 
         {/* Tip Card */}
-        <div className="mt-4 bg-primary/5 rounded-2xl p-5 border border-primary/10 animate-slide-up" style={{ animationDelay: "0.7s", animationFillMode: "both" }}>
+        <div
+          className="mt-4 bg-primary/5 rounded-2xl p-5 border border-primary/10 animate-slide-up"
+          style={{ animationDelay: "0.7s", animationFillMode: "both" }}
+        >
           <p className="text-sm text-foreground leading-relaxed">{tip}</p>
         </div>
       </div>
@@ -99,20 +120,18 @@ export function PersonalityResultScreen({
           다른 주제 해보기 🎯
         </button>
 
-        {/* Share buttons */}
         <div className="flex gap-2">
-          {!isTossApp() && (
-            <button
-              onClick={handleKakaoShare}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm animate-scale-press"
-              style={{ backgroundColor: "#FEE500", color: "#191919" }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 3C6.48 3 2 6.54 2 10.86c0 2.78 1.8 5.22 4.52 6.6-.2.72-.72 2.6-.82 3.02-.14.52.19.51.4.37.16-.1 2.6-1.76 3.66-2.48.72.1 1.46.16 2.24.16 5.52 0 10-3.54 10-7.86S17.52 3 12 3Z" fill="#191919"/>
-              </svg>
-              카카오톡
-            </button>
-          )}
+          <button
+            onClick={handleKakaoShare}
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm animate-scale-press"
+            style={{ backgroundColor: "#FEE500", color: "#191919" }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3C6.48 3 2 6.54 2 10.86c0 2.78 1.8 5.22 4.52 6.6-.2.72-.72 2.6-.82 3.02-.14.52.19.51.4.37.16-.1 2.6-1.76 3.66-2.48.72.1 1.46.16 2.24.16 5.52 0 10-3.54 10-7.86S17.52 3 12 3Z" fill="#191919"/>
+            </svg>
+            카카오톡
+          </button>
+
           <button
             onClick={handleShare}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-secondary text-secondary-foreground font-semibold text-sm animate-scale-press"

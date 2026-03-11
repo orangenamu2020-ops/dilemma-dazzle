@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Play, Loader2 } from "lucide-react";
-import { showTossInterstitialAd } from "@/lib/toss";
+import { showTossRewardedAd } from "@/lib/toss";
 
 interface AdBreakProps {
   onClose: () => void;
@@ -11,15 +11,14 @@ export function AdBreak({ onClose }: AdBreakProps) {
   const [progress, setProgress] = useState(0);
   const adCalled = useRef(false);
 
-  // 광고 실행 (watching 단계 진입 시)
   useEffect(() => {
     if (phase !== "watching" || adCalled.current) return;
     adCalled.current = true;
 
-    // 프로그레스 바 애니메이션 (5초)
     const duration = 5000;
     const interval = 50;
     const step = (interval / duration) * 100;
+
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -30,11 +29,10 @@ export function AdBreak({ onClose }: AdBreakProps) {
       });
     }, interval);
 
-    // 실제 앱인토스 전면 광고 호출
-    showTossInterstitialAd().then((success) => {
+    showTossRewardedAd().then((success) => {
       clearInterval(timer);
       setProgress(100);
-      console.log("[AdBreak] 광고 결과:", success);
+      console.log("[AdBreak] 리워드 광고 결과:", success);
       setPhase("done");
     });
 
@@ -50,7 +48,9 @@ export function AdBreak({ onClose }: AdBreakProps) {
             당신의 분석 결과가 준비되었어요!
           </h2>
           <p className="text-sm text-muted-foreground mb-8 leading-relaxed max-w-xs">
-            짧은 광고를 시청하면<br />나에 대한 깊이 있는 분석 결과를 확인할 수 있어요
+            짧은 광고를 시청하면
+            <br />
+            나에 대한 깊이 있는 분석 결과를 확인할 수 있어요
           </p>
           <button
             onClick={() => setPhase("watching")}
@@ -66,7 +66,9 @@ export function AdBreak({ onClose }: AdBreakProps) {
         <div className="flex flex-col items-center text-center w-full max-w-sm animate-fade-in">
           <div className="w-full aspect-video bg-secondary rounded-2xl flex flex-col items-center justify-center mb-6 border border-border">
             <Loader2 className="w-8 h-8 text-muted-foreground animate-spin mb-3" />
-            <span className="text-xs text-muted-foreground font-medium">전면 광고 로딩 중...</span>
+            <span className="text-xs text-muted-foreground font-medium">
+              리워드 광고 로딩 중...
+            </span>
           </div>
           <div className="w-full h-1.5 bg-secondary rounded-full overflow-hidden mb-3">
             <div

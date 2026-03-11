@@ -20,20 +20,22 @@ export function isMobile(): boolean {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-const AD_GROUP_ID = "ait-ad-test-interstitial-id";
+const AD_GROUP_ID = "ait-ad-test-rewarded-id";
 
 /**
- * 앱인토스 전면형 광고 표시
+ * 앱인토스 리워드 광고 표시
  * - 토스 앱 내: @apps-in-toss/web-framework SDK 사용
  * - 그 외: 시뮬레이션 (5초 대기)
  */
-export async function showTossInterstitialAd(): Promise<boolean> {
+export async function showTossRewardedAd(): Promise<boolean> {
   try {
     const { GoogleAdMob } = await import("@apps-in-toss/web-framework");
 
-    const isSupported = GoogleAdMob.loadAppsInTossAdMob.isSupported();
-    if (isSupported !== true) {
-      console.log("[TossAd] AdMob 미지원 환경, 시뮬레이션 실행");
+    const loadSupported = GoogleAdMob.loadAppsInTossAdMob.isSupported();
+    const showSupported = GoogleAdMob.showAppsInTossAdMob.isSupported();
+
+    if (loadSupported !== true || showSupported !== true) {
+      console.log("[TossAd] 리워드 광고 미지원 환경, 시뮬레이션 실행");
       return simulateAd();
     }
 
@@ -43,7 +45,7 @@ export async function showTossInterstitialAd(): Promise<boolean> {
         options: { adGroupId: AD_GROUP_ID },
         onEvent: (event) => {
           if (event.type === "loaded") {
-            console.log("[TossAd] 전면 광고 로드 완료");
+            console.log("[TossAd] 리워드 광고 로드 완료");
             unsubscribe();
             resolve();
           }
@@ -58,14 +60,26 @@ export async function showTossInterstitialAd(): Promise<boolean> {
 
     // 2) 광고 표시
     return new Promise<boolean>((resolve) => {
+      let rewarded = false;
+
       const unsubscribe = GoogleAdMob.showAppsInTossAdMob({
         options: { adGroupId: AD_GROUP_ID },
         onEvent: (event) => {
-          if (event.type === "dismissed") {
-            console.log("[TossAd] 전면 광고 닫힘");
-            unsubscribe();
-            resolve(true);
+          if (event.type === "show" || event.type === "impression") {
+            console.log("[TossAd] 리워드 광고 표시 중");
           }
+
+          if (event.type === "userEarnedReward") {
+            console.log("[TossAd] 리워드 지급 완료");
+            rewarded = true;
+          }
+
+          if (event.type === "dismissed") {
+            console.log("[TossAd] 리워드 광고 닫힘");
+            unsubscribe();
+            resolve(rewarded);
+          }
+
           if (event.type === "failedToShow") {
             console.error("[TossAd] 광고 표시 실패");
             unsubscribe();
@@ -89,7 +103,7 @@ export async function showTossInterstitialAd(): Promise<boolean> {
 function simulateAd(): Promise<boolean> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log("[TossAd] 시뮬레이션 광고 완료");
+      console.log("[TossAd] 시뮬레이션 리워드 광고 완료");
       resolve(true);
     }, 5000);
   });
